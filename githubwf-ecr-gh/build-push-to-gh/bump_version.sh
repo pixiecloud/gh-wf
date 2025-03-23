@@ -2,7 +2,7 @@
 
 # Check if VERSION-GH file exists
 if [ ! -f VERSION-GH ]; then
-  echo "2.2.19" > VERSION-GH
+  echo "2.2.21" > VERSION-GH
 fi
 
 current_version=$(cat VERSION-GH)
