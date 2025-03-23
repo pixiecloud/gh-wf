@@ -50,7 +50,7 @@ jobs:
         output: 'build-push-to-gh/trivy-report.txt'
 
     - name: Package Trivy report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: trivy-report
         path: build-push-to-gh/trivy-report.txt
