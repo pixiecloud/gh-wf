@@ -1,0 +1,31 @@
+# apiVersion: argoproj.io/v1alpha1
+# kind: WorkflowTemplate
+# metadata:
+#   name: world-pipeline
+#   annotations:
+#     workflows.argoproj.io/description: |
+#       templates for world creation and destruction
+#       must be run with service account that has access to storageclasses and persistentvolumeclaims
+#       add '--serviceaccount argo-infra' to run workflow
+#     workflows.argoproj.io/maintainer: '@eredd.carr@reded.com'
+#     workflows.argoproj.io/tags: world
+# spec:
+#   entrypoint: world-create
+#   onExit: exit-handler
+
+#   arguments:
+#     parameters:
+#       - name: cluster
+#       - name: region
+#         value: "us-east-1"
+#       - name: imageRepo
+#         value: "ghcr.io/{{ github.repository }}/node-app"
+#       - name: worldName
+#       - name: worldId
+#       - name: logLocation
+#         value: "logs"
+#       - name: version
+#         value: "{{ version }}"
+#       - name: retryCount
+#         value: 2
+#       - name: worldInfoLocation
