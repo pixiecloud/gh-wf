@@ -45,7 +45,7 @@ jobs:
     - name: Build the Docker image
       run: |
         cd build-push-to-gh
-        runs-on: [self-hosted]
+        runs-on: [self-hosted, linux, x64, gpu]
         docker build -t ghcr.io/${{ github.repository }}/node-app:${{ env.new_version }} .
 
     - name: Run Trivy vulnerability scanner
