@@ -24,7 +24,11 @@ spec:
       - name: logLocation
         value: "logs"
       - name: version
-        value: "2.2.25"
+<<<<<<< HEAD
+        value: "2.2.25"  # This will be updated dynamically in the pipeline
+=======
+        value: "2.2.24"  # This will be updated dynamically in the pipeline
+>>>>>>> f32ad7df97f2776e804e52e5d515328970d5cf75
       - name: retryCount
         value: 2
       - name: worldInfoLocation
