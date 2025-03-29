@@ -36,7 +36,8 @@ jobs:
       run: |
         curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
         unzip sonar-scanner.zip
-        export PATH="$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH"
+        echo "$PWD/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
+
 
     - name: Run SonarScanner
       run: |
