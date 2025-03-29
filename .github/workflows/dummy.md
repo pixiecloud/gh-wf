@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build and Push the image
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
 
     steps:
     - name: Check out code
@@ -21,15 +21,6 @@ jobs:
         ./build-push-to-gh/bump_version.sh
         new_version=$(cat VERSION-GH)
         echo "new_version=$new_version" >> $GITHUB_ENV
-    
-     # SonarQube Scan
-    - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@v1.2
-      with:
-        projectBaseDir: build-push-to-gh
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
     - name: Commit new version and updated WorkflowTemplate.yaml
       run: |
@@ -45,7 +36,6 @@ jobs:
     - name: Build the Docker image
       run: |
         cd build-push-to-gh
-        runs-on: [self-hosted, linux, x64, gpu]
         docker build -t ghcr.io/${{ github.repository }}/node-app:${{ env.new_version }} .
 
     - name: Run Trivy vulnerability scanner
@@ -71,6 +61,26 @@ jobs:
         docker push ghcr.io/${{ github.repository }}/node-app:${{ env.new_version }}
         docker tag ghcr.io/${{ github.repository }}/node-app:${{ env.new_version }} ghcr.io/${{ github.repository }}/node-app:latest
         docker push ghcr.io/${{ github.repository }}/node-app:latest
+
+  sonar:
+    name: SonarQube Code Scan
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Analyze with SonarQube
+      uses: SonarSource/sonarqube-scan-action@v1.1.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      with:
+        args: >
+          -Dsonar.projectKey=node-app
+          -Dsonar.sources=build-push-to-gh
 
   deploy:
     name: Deploy to Argo
