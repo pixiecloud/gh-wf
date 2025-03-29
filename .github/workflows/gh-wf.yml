@@ -24,13 +24,27 @@ jobs:
         echo "new_version=$new_version" >> $GITHUB_ENV
     
      # SonarQube Scan
-    - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@v1.2
-      with:
-        projectBaseDir: build-push-to-gh
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    # - name: SonarQube Scan
+    #   uses: sonarsource/sonarqube-scan-action@v1.2
+    #   with:
+    #     projectBaseDir: build-push-to-gh
+    #   env:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    
+    - name: Install SonarScanner CLI
+      run: |
+        curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+        unzip sonar-scanner.zip
+        export PATH="$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH"
+
+    - name: Run SonarScanner
+      run: |
+        sonar-scanner \
+          -Dsonar.projectKey=node-app \
+          -Dsonar.sources=build-push-to-gh \
+          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
     - name: Commit new version and updated WorkflowTemplate.yaml
       run: |
